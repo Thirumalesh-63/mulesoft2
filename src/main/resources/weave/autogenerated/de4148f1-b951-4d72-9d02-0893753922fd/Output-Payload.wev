@@ -1,0 +1,10 @@
+%dw 2.0
+
+type auto_de4148f1_b951_4d72_9d02_0893753922fd_Output_Payload = {
+  Role: String, 
+  userName: String, 
+  userId: String, 
+  Password: String, 
+  _?: Any
+} {"description": "This is user datatype"}
+

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
+	<flow name="get:\get-user:user-system-api-config" doc:id="cedb640e-6b94-442a-89b0-d756c9c009ca" >
+		<logger level="INFO" doc:name="Logger" doc:id="98f6fedf-3807-4a58-8827-fe90225ccf70" message="GET  USER START LOG"/>
+		<db:select doc:name="Select" doc:id="233a8dc9-0818-44d4-8346-4d48c896942b" config-ref="Database_Config">
+			<db:sql ><![CDATA[select * from users where user_id=:sid;]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	sid:attributes.queryParams.id
+}]]]></db:input-parameters>
+		</db:select>
+		<choice doc:name="Choice" doc:id="88344f09-158c-43fe-91ee-9f67ca1c2cbc" >
+			<when expression="#[payload != []]">
+				<ee:transform doc:name="Transform Message" doc:id="ec38a8f5-c3fb-4840-8faf-8992ea5b607b">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload ]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+			</when>
+			<otherwise >
+				<raise-error doc:name="Raise error" doc:id="dae2193f-ce3f-40cc-a2fb-59f09d1c1695" type="USER:NOTFOUND" description="user not avilable"/>
+			</otherwise>
+		</choice>
+		<logger level="INFO" doc:name="Logger" doc:id="9ccd4a2a-da40-4062-b970-878706ba1e26" message="GET  USER END LOG"/>
+	</flow>
+</mule>

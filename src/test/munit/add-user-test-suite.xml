@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="add-user-test-suite.xml" />
+	<munit:test name="add-user-test-suite-post:\add-user:application\json:user-system-api-configTest" doc:id="61220433-3bc4-41f0-ae0a-dae27230a6ca" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="44ff97df-2c2c-485f-b6a7-1aa2719d8c04" processor="db:insert">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="35e04191-1f7d-462e-8e4a-6b2067de4687" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[[]]" mediaType="application/json" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="a0edcd30-8b7b-42e9-b2f9-f8e5fda1a909" >
+				<munit:payload value='#[{&#10;    "userId":"user5",&#10;   "Role":"Admin",&#10;    "userName":"rajesh",&#10;   "Password":"raj@321",&#10;   "Email":"rajesh321@gmail.com"&#10;}]' encoding="UTF-8" mediaType="application/java" />
+			</munit:set-event>
+			<flow-ref doc:name="Flow-ref to post:\add-user:application\json:user-system-api-config" doc:id="13f416a8-59fc-4b3f-8d95-de58991fa2c3" name="post:\add-user:application\json:user-system-api-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-equals doc:name="Assert equals" doc:id="20087aa8-c7f7-4654-8c7f-e576013c4c27" actual="#[payload.userId]" expected="user5"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="add-user-test-suiteTest4" doc:id="e7c744dd-693a-47a2-8a55-76a65b8aaf37" expectedErrorType="USER:NOTFOUND">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="4bc93303-c6be-4d74-8832-ed7245e4a8e5" processor="db:select">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="835d3678-febd-402d-9a34-f3e3c657d34c" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[[]]" mediaType="application/java" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="b3bf0247-dbda-4294-9f05-5b1592927573" />
+			<flow-ref doc:name="Flow Reference" doc:id="f0a57f01-b010-4a5c-9cd9-0e6180269e63" name="delete:\delete-user:user-system-api-config"/>
+		</munit:execution>
+	</munit:test>
+	<munit:test name="add-user-test-suiteTest5" doc:id="e9b70258-50be-45a2-ae81-64389c1389ae" expectedErrorType="DELETE:TRANSACTIONS">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="03e57123-b348-4847-8ebc-2b75b335ea5e" processor="db:select">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="835d3678-febd-402d-9a34-f3e3c657d34c" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value='#[[userId:"user5"]]' mediaType="application/java" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="98acd9db-83d7-475f-9ca3-2cb1de9688ce" processor="db:select">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="2c7f1b28-d79f-43be-9ac5-08d67e5c07d2" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow Reference" doc:id="86cbd005-0fbe-4bc6-aa46-5db44e49f065" name="delete:\delete-user:user-system-api-config"/>
+		</munit:execution>
+	</munit:test>
+	<munit:test name="add-user-test-suiteTest" doc:id="b7a5903d-7624-4b3a-b14f-1a8d396170f1" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="a5f4d589-163d-4dd2-8a8b-45e7635ec6d5" processor="db:select">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="2c7f1b28-d79f-43be-9ac5-08d67e5c07d2" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[[]]" mediaType="application/java" encoding="UTF-8" />
+					<munit-tools:variables >
+						<munit-tools:variable key="transactiondata" value="#[[]]" mediaType="application/java" encoding="UTF-8" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="5ae5e1e4-faac-48c5-bcaa-b1e0202e470b" processor="db:select">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="835d3678-febd-402d-9a34-f3e3c657d34c" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value='#[{&#10;    "userId":"user4",&#10;   "Role":"Admin",&#10;    "userName":"rajesh",&#10;   "Password":"raj@321g",&#10;   "Email":"rajesh321@gmail.com"&#10;}]' mediaType="application/java" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="a2436e52-3233-4081-8145-4ed5393bb27e" processor="db:delete">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="a74264b5-edea-4b98-aefd-9d7c04eb74f9" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[[]]" mediaType="application/java" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="699f9ae2-5a19-4b2f-b7df-d3b3ee9d8e93" >
+				<munit:payload value="#[[]]" encoding="UTF-8" mediaType="application/java" />
+			</munit:set-event>
+			<flow-ref doc:name="Flow Reference" doc:id="3e00bc23-2702-431e-b777-121d8361b397" name="delete:\delete-user:user-system-api-config"/>
+		</munit:execution>
+		<munit:validation>
+			<munit-tools:assert-equals doc:name="Assert equals" doc:id="91a857d5-0b64-424c-a44c-6be54349dc1e" actual="#[payload.message]" expected="USER DELETED SUCCESSFULLY"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="add-user-test-suiteTest1" doc:id="a0d82d54-bf1e-428a-b639-88f50462129d" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="3ee75bdf-f4dc-4c3b-8ddd-090ba1b73ecb" processor="db:select">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="13ffaca5-5e25-40c5-a1da-87ca7de00a4e" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value='#[[&#10;	{&#10;    "userId":"user5",&#10;   "Role":"Admin",&#10;    "userName":"rajesh",&#10;   "Password":"raj@321g",&#10;   "Email":"rajesh321@gmail.com"&#10;},&#10;{&#10;    "userId":"user6",&#10;   "Role":"Admin",&#10;    "userName":"rajesh2",&#10;   "Password":"raj2@321g",&#10;   "Email":"rajesh@gmail.com"&#10;}&#10;]]' mediaType="application/java" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="e47068d6-1cf8-492c-a68e-df81329573c9" >
+				<munit:payload value="#[[]]" mediaType="application/json" />
+			</munit:set-event>
+			<flow-ref doc:name="Flow Reference" doc:id="f244940b-e4bd-4b26-bb68-dfca54cd0ed4" name="get:\get-all-user:user-system-api-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-equals doc:name="Assert equals" doc:id="cc368b71-78ef-4b91-bbb5-76c8585f53f4" actual="#[payload[0].Role]" expected='#["Admin"]'/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="add-user-test-suiteTest2" doc:id="95d41ef3-b7c7-4377-ad05-7f4fcc8ddef2" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="993f2653-d854-41ff-a2ca-ec0d199f5a6c" processor="db:select">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="233a8dc9-0818-44d4-8346-4d48c896942b" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value='#[{&#10;    "userId":"user5",&#10;   "Role":"Admin",&#10;    "userName":"rajesh",&#10;   "Password":"raj@321g",&#10;   "Email":"rajesh321@gmail.com"&#10;}]' mediaType="application/java" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="99dd9f71-b7c7-47a1-bc7d-880a9db0b8fd" >
+				<munit:payload value="#[[]]" encoding="UTF-8" mediaType="application/java" />
+			</munit:set-event>
+			<flow-ref doc:name="Flow Reference" doc:id="20f35274-a168-41ab-b072-ace0d22d97e8" name="get:\get-user:user-system-api-config"/>
+		</munit:execution>
+		<munit:validation>
+			<munit-tools:assert-that doc:name="Assert that" doc:id="4081b577-cd70-4ef2-ba87-34fa7feb73ae" is="#[MunitTools::allOf([MunitTools::notNullValue(),MunitTools::withMediaType('application/json')])]" expression="#[payload]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="add-user-test-suiteTest7" doc:id="7c938efe-90e5-4cf2-84ab-37894930c323" expectedErrorType="USER:NOTFOUND">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="ac19927d-4841-4e66-b853-451dcdfb3288" processor="db:select">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="3627be2e-6dcd-4674-b73f-7b550e9dd13b" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:variables >
+						<munit-tools:variable key="userInfo" value="#[[]]" mediaType="application/java" encoding="UTF-8" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="bc7bea7c-4fcc-47d5-9cb5-2a9d88ad674c" >
+				<munit:payload value='#[userId:"user5"]' encoding="UTF-8" mediaType="application/java" />
+			</munit:set-event>
+			<flow-ref doc:name="Flow Reference" doc:id="5cfb8b2e-af8f-4a09-9957-c5441ed0f70e" name="put:\update-user:application\json:user-system-api-config"/>
+		</munit:execution>
+	</munit:test>
+	<munit:test name="add-user-test-suiteTest6" doc:id="ce4a185c-c7a7-4dab-ba8a-b0aee7831cbe" expectedErrorType="USER:NOTFOUND">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="e15f408d-0357-4df0-b9d2-e167de2b7cf0" processor="db:select">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="233a8dc9-0818-44d4-8346-4d48c896942b" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[[]]" mediaType="application/java" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow Reference" doc:id="7abe63e1-bfda-4fd5-b197-2c962b1c6334" name="get:\get-user:user-system-api-config"/>
+		</munit:execution>
+	</munit:test>
+	<munit:test name="add-user-test-suiteTest3" doc:id="6c3b97e3-6510-404a-af8a-c7271a073986" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="1bd16393-1f37-4183-a266-2c69da70442d" processor="db:select">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="3627be2e-6dcd-4674-b73f-7b550e9dd13b" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value='#[{&#10;    "userId":"user5",&#10;   "Role":"Admin",&#10;    "userName":"rajesh",&#10;   "Password":"raj@321g",&#10;   "Email":"rajesh321@gmail.com"&#10;}]' mediaType="application/java" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="69724632-5e4a-4aa5-8750-d37a676b43db" processor="db:update">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="d0e87290-4e05-4d5f-ae51-5a093b035cdb" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[[]]" mediaType="application/java" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="90d0b9d9-b24d-44af-8d6d-5305e67ef7fc" processor="db:select">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="0f6f474f-bed6-402a-88fb-90507ca4657b" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value='#[[{&#10;    "userId":"user5",&#10;   "Role":"Admin",&#10;    "userName":"rajeswari",&#10;   "Password":"raj@321g",&#10;   "Email":"rajeswari321@gmail.com"&#10;}]]' mediaType="application/java" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="eb037c34-70e1-43c9-a45f-1884b85950c7" >
+				<munit:payload value='#[{&#10;    "userId":"user5",&#10;   "Role":"Admin",&#10;    "userName":"rajeswari",&#10;   "Password":"raj@321g",&#10;   "Email":"rajeswari321@gmail.com"&#10;}]' encoding="UTF-8" mediaType="application/java" />
+			</munit:set-event>
+			<flow-ref doc:name="Flow Reference" doc:id="f9d373ba-5407-4445-8d2a-0e635ac49d04" name="put:\update-user:application\json:user-system-api-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-equals doc:name="Assert equals" doc:id="79f971df-7fe5-4403-8b8b-5850b95850c8" actual="#[payload[0].userName]" expected='#["rajeswari"]'/>
+		</munit:validation>
+	</munit:test>
+
+
+</mule>

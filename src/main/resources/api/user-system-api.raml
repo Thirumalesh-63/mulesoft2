@@ -1,0 +1,80 @@
+#%RAML 1.0
+title: user-system-api
+description: this is an user api
+baseUri: http://localhost:8081/user-api
+traits:
+  user-qp: !include /Traits/user-qp.raml
+  error-responses: !include /Traits/error-response.raml
+  client_id_req: !include /exchange_modules/d26c9246-a2d4-48b3-aff1-af32e388e2db/client-id/1.0.0/client-id.raml
+  correlation_id_req: !include /exchange_modules/d26c9246-a2d4-48b3-aff1-af32e388e2db/correlation-id/1.0.0/correlation-id.raml
+uses:
+  lib: /exchange_modules/d26c9246-a2d4-48b3-aff1-af32e388e2db/user-data-type/1.0.0/user-data-type.raml
+/add-user:
+ is:
+  - error-responses
+  - client_id_req
+  - correlation_id_req
+ post:
+  body:
+    application/json:
+      type: lib.user
+      example: !include /examples/200-user.json
+  responses:
+    200:
+      body:
+        application/json:
+          example: !include /examples/200-add-user.json
+
+/get-all-user:
+ is:
+  - error-responses
+  - client_id_req
+  - correlation_id_req
+ get:
+  responses:
+    200:
+      body:
+        application/json:
+          example: !include /examples/200-getall.json
+
+/get-user:
+ is:
+   - user-qp
+   - error-responses
+   - client_id_req
+   - correlation_id_req
+ get:
+ 
+  responses:
+    200:
+      body:
+        application/json:
+          example: !include /examples/200-user.json 
+/update-user:
+ is:
+  - error-responses
+  - correlation_id_req
+  - client_id_req
+ put:
+  body:
+    application/json:
+      example: !include /examples/200-user.json
+  responses:
+    200:
+      body:
+        application/json:
+          type: lib.user
+          example: !include /examples/200-user.json
+/delete-user:
+ is:
+  - error-responses
+  - client_id_req
+  - user-qp
+  - correlation_id_req
+ delete:
+  responses:
+    200:
+      body:
+        application/json:
+          example: !include /examples/200-delete-user.json
+

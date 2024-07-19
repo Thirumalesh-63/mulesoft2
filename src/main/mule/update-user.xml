@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
+	<flow name="put:\update-user:application\json:user-system-api-config" doc:id="de4148f1-b951-4d72-9d02-0893753922fd" >
+		<logger level="INFO" doc:name="Logger" doc:id="a996af78-635a-4347-a6d1-088bcd8111ad" message="UPDATE  USER START LOG"/>
+		<set-variable value="#[payload.userId]" doc:name="Set Variable" doc:id="fa50f939-9208-4543-be5b-34d11c891b8c" variableName="userId"/>
+		<db:select doc:name="Select" doc:id="3627be2e-6dcd-4674-b73f-7b550e9dd13b" config-ref="Database_Config" target="userInfo">
+			<db:sql ><![CDATA[select * from users where user_id=:sid;]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	sid:payload.userId
+}]]]></db:input-parameters>
+		</db:select>
+		<choice doc:name="Choice" doc:id="fdc32dcd-c6ec-4a84-a99c-027d235251cc" >
+			<when expression="#[vars.userInfo != []]">
+				<db:update doc:name="Update" doc:id="d0e87290-4e05-4d5f-ae51-5a093b035cdb" config-ref="Database_Config">
+					<db:sql ><![CDATA[UPDATE users SET user_name=:name,user_password=:password,user_role=:role,email_id=:email WHERE user_id=:sid
+]]></db:sql>
+					<db:input-parameters ><![CDATA[#[{
+	name:payload.userName default vars.userinfo.user_name[0],
+	role:payload.Role default vars.userinfo.user_role[0],
+	password:payload.Password default vars.userinfo.user_password[0] as String,
+	sid:payload.userId,
+	email:payload.Email default vars.userInfo.email_id as String
+}]]]></db:input-parameters>
+				</db:update>
+				<db:select doc:name="Select" doc:id="0f6f474f-bed6-402a-88fb-90507ca4657b" config-ref="Database_Config">
+					<db:sql ><![CDATA[select * from users where user_id=:sid;]]></db:sql>
+					<db:input-parameters ><![CDATA[#[{
+	sid:vars.userId
+}]]]></db:input-parameters>
+				</db:select>
+			</when>
+			<otherwise >
+				<raise-error doc:name="Raise error" doc:id="c124b60b-955b-4814-9ce7-106cd337ba9d" type="USER:NOTFOUND" description="user not available "/>
+			</otherwise>
+		</choice>
+		<ee:transform doc:name="Transform Message" doc:id="ec12bbe3-3642-4b44-8e1a-b195181975c7" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="20bb6e43-8a55-4770-b864-bff139c806f9" message="UPDATE  USER END LOG"/>
+	</flow>
+</mule>

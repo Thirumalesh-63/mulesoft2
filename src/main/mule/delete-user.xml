@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
+	<flow name="delete:\delete-user:user-system-api-config" doc:id="e26093f1-b717-4d18-9ae4-cd99fc1e0409" >
+		<logger level="INFO" doc:name="Logger" doc:id="52955e04-ee46-482e-8036-647c96286504" message="DELETING USER START LOG"/>
+		<db:select doc:name="Select" doc:id="835d3678-febd-402d-9a34-f3e3c657d34c" config-ref="Database_Config">
+			<db:sql ><![CDATA[select * from users where user_id=:sid;]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	sid:attributes.queryParams.id
+}]]]></db:input-parameters>
+		</db:select>
+		<choice doc:name="Choice" doc:id="37367eb7-dc45-46b5-bf6e-121365309fde" >
+			<when expression="#[payload != []]">
+				<db:select doc:name="Select" doc:id="2c7f1b28-d79f-43be-9ac5-08d67e5c07d2" config-ref="Database_Config" target="transactiondata">
+					<db:sql ><![CDATA[select * from transactions where user_id=:sid]]></db:sql>
+					<db:input-parameters ><![CDATA[#[{
+	sid:payload[0].user_id
+}]]]></db:input-parameters>
+				</db:select>
+				<choice doc:name="Choice" doc:id="6b7ab7ab-8097-4829-963c-ef7dd98c3990" >
+					<when expression="#[vars.transactiondata == []]">
+						<db:delete doc:name="Delete" doc:id="a74264b5-edea-4b98-aefd-9d7c04eb74f9" config-ref="Database_Config">
+							<db:sql ><![CDATA[delete from users where user_id=:sid;]]></db:sql>
+							<db:input-parameters ><![CDATA[#[{
+	sid:payload[0].user_id
+}]]]></db:input-parameters>
+						</db:delete>
+					</when>
+					<otherwise >
+						<raise-error doc:name="Raise error" doc:id="da1c4983-18e0-406d-908c-b6db1263e3a6" type="DELETE:TRANSACTIONS" description="delete related transactions for the user in transactions"/>
+					</otherwise>
+				</choice>
+			</when>
+			<otherwise >
+				<raise-error doc:name="Raise error" doc:id="667c7f6c-dd77-4f71-b9c2-6c00b887e88d" type="USER:NOTFOUND" description="user not available"/>
+			</otherwise>
+		</choice>
+		<ee:transform doc:name="Transform Message" doc:id="df5bcb0e-807c-415b-aaf2-473ceb5c6269" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+  message: "USER DELETED SUCCESSFULLY"
+} as Object {encoding: "UTF-8", mediaType: "application/json"}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>

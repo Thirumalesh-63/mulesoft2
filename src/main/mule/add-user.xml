@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="e4516369-b8c2-4cef-83f9-f1bcd15bab21" >
+		<db:my-sql-connection host="${db.host}" port="${db.port}" user="${db.user}" password="${db.pwd}" database="${db.database}" />
+	</db:config>
+	<flow name="post:\add-user:application\json:user-system-api-config" doc:id="1cc47793-7283-4c60-911a-acd5395f5fa5" >
+		<logger level="INFO" doc:name="Logger" doc:id="0b73d797-ad9a-4088-aaf5-fbe412d17fcb" message="ADDING USER START LOG"/>
+		<set-variable value="#[payload.userId]" doc:name="Set Variable" doc:id="08adb113-5b87-4d6d-b407-49754d481988" variableName="userId"/>
+		<db:insert doc:name="Insert" doc:id="35e04191-1f7d-462e-8e4a-6b2067de4687" config-ref="Database_Config">
+			<db:sql ><![CDATA[insert into users(user_id,user_role,user_password,user_name,email_id) values(:id,:role,:password,:name,:email);]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	  "id":payload.userId,
+	  "role":payload.Role,
+	  "password":payload.Password,
+	  "name":payload.userName,
+	  "email":payload.Email
+  }]]]></db:input-parameters>
+		</db:insert>
+		<ee:transform doc:name="Transform Message" doc:id="eceb7472-e5db-471a-bb22-c48889a9f12d" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+  userId: vars.userId,
+  message: "user created succesfully"
+} as Object {encoding: "UTF-8", mediaType: "application/json"}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="f48e15e5-b6a2-4cc1-af98-79a37a4b8292" message="ADDING USER END LOG"/>
+	</flow>
+</mule>

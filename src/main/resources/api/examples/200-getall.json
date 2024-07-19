@@ -1,0 +1,16 @@
+[
+  {
+   "userId":"user123",
+   "Role":"Student",
+   "userName":"thirumal",
+   "Password":"Thirumal@123",
+   "Email":"thurmal@gmail.com"
+} ,
+{
+   "userId":"user1234",
+   "Role":"Student",
+   "userName":"thirumal",
+   "Password":"Thirumal@123",
+   "Email":"thurmal@gmail.com"
+}
+]
